@@ -19,22 +19,64 @@
 ### Users 테이블
 | Name     | Type        | Constraint | Explanation |
 | -------- | ----------- | ---------- | ----------- |
-| userid   | int         | primary    | 숫자아이디 (랜덤)  |
-| username | varchar(30) |            | 이름, 20자이내   |
+| username | varchar(32) | primary    | 이름, 30자이내   |
 | password | varchar(64) |            | SHA-256     |
 
 ### Songs 테이블
+- tablename = 0
 | Name     | Type        | Constraint | Explanation     |
 | -------- | ----------- | ---------- | --------------- |
 | songid   | int         | primary    | 숫자아이디 (랜덤)      |
-| name     | varchar(50) |            | 이름              |
-| writer   | varchar(30) |            | 작곡가             |
-| location | varchar(40) |            | 음원 위치           |
-| listid   | int         |            | 음원 위치           |
-| genre    | varchar(20) | foreign    | 장르 (Genres 테이블) |
+| name     | varchar(64) |            | 이름              |
+| writer   | varchar(32) |            | 작곡가             |
+| location | varchar(64) |            | 음원 위치           |
+| bpm      | int         |            | 곡의 템포           |
+| release  | date        |            | 발매일             |
 
 ### Genres 테이블
+- tablename = 1
+| Name    | Type         | Constraint | Explanation |
+| ------- | ------------ | ---------- | ----------- |
+| genreid | int          | primary    | 숫자아이디 (랜덤)  |
+| genre   | varchar(32)  |            | 장르 이름       |
+| explain | varchar(512) |            | 장르 설명       |
+
+### songGenres 테이블
+| Name    | Type | Constraint      | Explanation |
+| ------- | ---- | --------------- | ----------- |
+| id      | int  | primary         | 숫자아이디 (랜덤)  |
+| genreid | int  | foreign         | 장르 이름       |
+| songid  | int  | foreign         | 곡 이름        |
 
 ### Playlists 테이블
+- tablename = 2
+| Name    | Type         | Constraint | Explanation |
+| ------- | ------------ | ---------- | ----------- |
+| listid  | int          | primary    | 숫자아이디 (랜덤)   |
+| name    | varchar(32)  |            | 플리 이름       |
+| explain | varchar(512) |            | 장르 설명       |
+
+### songPlaylists 테이블
+| Name   | Type | Constraint      | Explanation |
+| ------ | ---- | --------------- | ----------- |
+| id     | int  | primary         | 숫자아이디 (랜덤)  |
+| listid | int  | foreign         | 플레이리스트      |
+| songid | int  | foreign         | 곡 이름        |
+
+### Likes 테이블
+| Name      | Type        | Constraint | Explanation |
+| ----------- | ----------- | ---------- | ----------- |
+| username    | varchar(32) | primary    | 좋아한 유저      |
+| targettable | int         | primary    | readme 참고   |
+| targetid    | int         | primary    | readme 참고   |
 
 ### Videos 테이블
+- tablename = 3
+- 서버에서 음원 불러오고 편집 한 후 오디오를 포함한 비디오를 저장
+| Name     | Type         | Constraint | Explanation |
+| -------- | ------------ | ---------- | ----------- |
+| videoid  | int          | primary    | 숫자 아이디 (랜덤) |
+| name     | varchar(32)  |            | 비디오 이름      |
+| explain  | varchar(512) |            | 비디오 설명      |
+| username | varchar(32)  | foreign    | 만든 이        |
+| location | varchar(64)  |            | 비디오 위치      |
