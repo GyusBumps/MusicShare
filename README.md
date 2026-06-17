@@ -17,13 +17,17 @@
 ## DB 구성
 
 ### Users 테이블
+- 유저 생성
+
 | Name     | Type        | Constraint | Explanation |
 | -------- | ----------- | ---------- | ----------- |
 | username | varchar(32) | primary    | 이름, 30자이내   |
 | password | varchar(64) |            | SHA-256     |
 
 ### Songs 테이블
+- 음악 생성
 - tablename = 0
+
 | Name     | Type        | Constraint | Explanation     |
 | -------- | ----------- | ---------- | --------------- |
 | songid   | int         | primary    | 숫자아이디 (랜덤)      |
@@ -34,7 +38,9 @@
 | release  | date        |            | 발매일             |
 
 ### Genres 테이블
+- 장르 생성
 - tablename = 1
+
 | Name    | Type         | Constraint | Explanation |
 | ------- | ------------ | ---------- | ----------- |
 | genreid | int          | primary    | 숫자아이디 (랜덤)  |
@@ -42,6 +48,8 @@
 | explain | varchar(512) |            | 장르 설명       |
 
 ### songGenres 테이블
+- 장르에 음악을 넣고 내려
+
 | Name    | Type | Constraint      | Explanation |
 | ------- | ---- | --------------- | ----------- |
 | id      | int  | primary         | 숫자아이디 (랜덤)  |
@@ -49,7 +57,9 @@
 | songid  | int  | foreign         | 곡 이름        |
 
 ### Playlists 테이블
+- 플레이리스트 생성
 - tablename = 2
+
 | Name    | Type         | Constraint | Explanation |
 | ------- | ------------ | ---------- | ----------- |
 | listid  | int          | primary    | 숫자아이디 (랜덤)   |
@@ -57,6 +67,8 @@
 | explain | varchar(512) |            | 장르 설명       |
 
 ### songPlaylists 테이블
+- 플레이리스트에 음악 등록
+
 | Name   | Type | Constraint      | Explanation |
 | ------ | ---- | --------------- | ----------- |
 | id     | int  | primary         | 숫자아이디 (랜덤)  |
@@ -64,6 +76,8 @@
 | songid | int  | foreign         | 곡 이름        |
 
 ### Likes 테이블
+- 유저가 좋아요 등록
+
 | Name      | Type        | Constraint | Explanation |
 | ----------- | ----------- | ---------- | ----------- |
 | username    | varchar(32) | primary    | 좋아한 유저      |
@@ -73,6 +87,7 @@
 ### Videos 테이블
 - tablename = 3
 - 서버에서 음원 불러오고 편집 한 후 오디오를 포함한 비디오를 저장
+
 | Name     | Type         | Constraint | Explanation |
 | -------- | ------------ | ---------- | ----------- |
 | videoid  | int          | primary    | 숫자 아이디 (랜덤) |
