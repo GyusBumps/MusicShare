@@ -1,0 +1,25 @@
+/* 기본 설정 */
+body { margin: 0; font-family: 'Pretendard', sans-serif; background-color: #ffffff; color: #333; }
+
+/* 상단 메뉴 스타일 */
+.navbar { padding: 20px 50px; display: flex; justify-content: space-between; align-items: center; }
+.logo { font-weight: bold; font-size: 1.5rem; }
+.menu { display: flex; list-style: none; gap: 30px; }
+
+/* 메뉴 글자 애니메이션 */
+.menu-link { 
+    text-decoration: none; color: #333; font-weight: 500; 
+    transition: color 0.3s, border-bottom 0.3s;
+    border-bottom: 2px solid transparent; 
+}
+
+/* 클릭 시 애니메이션 효과 */
+.menu-link.clicked { 
+    color: #fff345;  
+}
+
+/* 섹션 및 리빌 효과 (이전과 동일) */
+section { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
+.reveal { opacity: 0; transform: translateY(50px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+.reveal.active { opacity: 1; transform: translateY(0); }
+.feature-box { background: #f9f9f9; padding: 40px; border-radius: 20px; width: 80%; max-width: 600px; }
