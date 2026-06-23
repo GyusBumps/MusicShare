@@ -1,0 +1,4 @@
+BACK/.env
+BACK/node_modules/
+BACK/mysql/data/
+.DS_Store
