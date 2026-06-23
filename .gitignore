@@ -1,4 +1,5 @@
 BACK/.env
 BACK/node_modules/
 BACK/mysql/data/
+BACK/media/
 .DS_Store
