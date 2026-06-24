@@ -26,8 +26,29 @@ for (const dir of Object.values(MEDIA_DIRS)) {
   fs.mkdirSync(dir, { recursive: true });
 }
 
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    if (file.mimetype.startsWith('video/')) {
+      cb(null, MEDIA_DIRS.videos);
+    } else {
+      cb(null, MEDIA_DIRS.songs);
+    }
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + ext);
+  }
+});
+const upload = multer({ storage });
+
 const app = express();
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginResourcePolicy: false,
+}));
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 
@@ -330,7 +351,12 @@ app.delete('/api/likes', asyncHandler(async (req, res) => {
 // ---------- Videos ----------
 
 app.get('/api/videos', asyncHandler(async (req, res) => {
-  const [rows] = await pool.query('SELECT * FROM Videos');
+  const [rows] = await pool.query(`
+    SELECT v.*, COUNT(l.targetid) AS likeCount
+    FROM Videos v
+    LEFT JOIN Likes l ON v.videoid = l.targetid AND l.targettable = 3
+    GROUP BY v.videoid
+  `);
   res.json(rows);
 }));
 
@@ -368,6 +394,37 @@ app.delete('/api/videos/:videoid', asyncHandler(async (req, res) => {
   const [result] = await pool.query('DELETE FROM Videos WHERE videoid = ?', [req.params.videoid]);
   if (result.affectedRows === 0) return res.status(404).json({ error: '비디오를 찾을 수 없습니다.' });
   res.status(204).end();
+}));
+
+app.post('/api/upload', upload.single('file'), asyncHandler(async (req, res) => {
+  const { title, description, username } = req.body;
+  if (!req.file) {
+    return res.status(400).json({ error: '파일이 제공되지 않았습니다.' });
+  }
+  if (!title || !username) {
+    return res.status(400).json({ error: '제목과 사용자 아이디는 필수입니다.' });
+  }
+
+  const isVideo = req.file.mimetype.startsWith('video/');
+  if (isVideo) {
+    const relativeLocation = `/media/videos/${req.file.filename}`;
+    const videoid = await insertWithRandomId(
+      'Videos',
+      'videoid',
+      ['name', '`explain`', 'username', 'location'],
+      [title, description ?? null, username, relativeLocation]
+    );
+    res.status(201).json({ type: 'video', videoid, name: title, explain: description, username, location: relativeLocation });
+  } else {
+    const relativeLocation = `/media/songs/${req.file.filename}`;
+    const songid = await insertWithRandomId(
+      'Songs',
+      'songid',
+      ['name', 'writer', 'location', 'bpm', '`release`'],
+      [title, username, relativeLocation, null, null]
+    );
+    res.status(201).json({ type: 'song', songid, name: title, writer: username, location: relativeLocation });
+  }
 }));
 
 // ---------- 공통 에러 처리 ----------

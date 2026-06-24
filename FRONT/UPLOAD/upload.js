@@ -1,4 +1,4 @@
-document.getElementById("upload-form").addEventListener("submit", (e) => {
+document.getElementById("upload-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     
     const title = document.getElementById("title").value;
@@ -6,15 +6,39 @@ document.getElementById("upload-form").addEventListener("submit", (e) => {
     const fileInput = document.getElementById("file");
     const file = fileInput.files[0];
 
-    // 추후 SERVER/server.js와 연동할 때 사용할 FormData 객체 생성 예시
+    const username = sessionStorage.getItem("username");
+    if (!username) {
+        alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+        location.href = "../LOGIN/login.html";
+        return;
+    }
+
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
     formData.append("file", file);
+    formData.append("username", username);
 
-    console.log("업로드 시도:", title, file.name);
-    alert(`'${title}' 파일이 가상으로 업로드 되었습니다. (서버 연결 필요)`);
-    
-    // 업로드 후 메인으로 이동
-    location.href = "../MAIN/main.html";
+    try {
+        const response = await fetch("/api/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert(`'${title}' 업로드 완료!`);
+            if (data.type === 'video') {
+                location.href = "../LEELS/leels.html";
+            } else {
+                location.href = "../MAIN/main.html";
+            }
+        } else {
+            alert(data.error || "업로드에 실패했습니다.");
+        }
+    } catch (error) {
+        console.error("업로드 에러:", error);
+        alert("서버 통신 중 오류가 발생했습니다.");
+    }
 });
