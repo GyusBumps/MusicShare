@@ -35,6 +35,14 @@ app.use(express.json({ limit: '1mb' }));
 app.use('/media/songs', express.static(MEDIA_DIRS.songs));
 app.use('/media/videos', express.static(MEDIA_DIRS.videos));
 
+// 프론트엔드 정적 파일 서빙
+app.use(express.static(path.join(__dirname, '../FRONT')));
+
+// 루트 경로로 접속 시 메인 페이지로 리다이렉트
+app.get('/', (req, res) => {
+  res.redirect('/MAIN/main.html');
+});
+
 const PORT = process.env.PORT || 3000;
 
 // README의 targettable 값 (Likes 테이블이 가리키는 대상 테이블)
