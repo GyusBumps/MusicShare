@@ -1,5 +1,5 @@
 BACK/.env
-BACK/node_modules/
-BACK/mysql/data/
-BACK/media/
+BACK/node_modules
+BACK/mysql/data
 .DS_Store
+.omc
